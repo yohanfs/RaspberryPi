@@ -1,6 +1,8 @@
 Raspberrypi
 ===========================================================================================
 
+.. contents:: Daftar Isi
+
 Raspberrypi adalah sebuah board komputer mini. Raspberrypi bisa berfungsi
 sebagai desktop komputer pada umumnya. 
 
