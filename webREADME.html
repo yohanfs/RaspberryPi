@@ -449,18 +449,22 @@ html,body{        margin: auto;
 <li><a class="reference internal" href="#cloning-sd-card" id="id7">Cloning SD Card</a></li>
 <li><a class="reference internal" href="#remote-desktop" id="id8">Remote Desktop</a></li>
 <li><a class="reference internal" href="#secure-copy-scp" id="id9">Secure Copy (SCP)</a></li>
+<li><a class="reference internal" href="#resolusi-monitor" id="id10">Resolusi Monitor</a></li>
+<li><a class="reference internal" href="#setting-static-ip-address" id="id11">Setting Static IP Address</a></li>
+<li><a class="reference internal" href="#mounting-usb-drive" id="id12">Mounting USB Drive</a></li>
+<li><a class="reference internal" href="#chmod-file-permission" id="id13">CHMOD: File Permission</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#web-server-apache2" id="id10">Web Server (Apache2)</a><ul>
-<li><a class="reference internal" href="#install-apache2" id="id11">Install Apache2</a></li>
-<li><a class="reference internal" href="#test-web-server" id="id12">Test Web Server</a></li>
-<li><a class="reference internal" href="#serve-static-web" id="id13">Serve Static Web</a></li>
-<li><a class="reference internal" href="#ganti-document-root" id="id14">Ganti Document Root</a></li>
-<li><a class="reference internal" href="#multiple-web" id="id15">Multiple Web</a></li>
+<li><a class="reference internal" href="#web-server-apache2" id="id14">Web Server (Apache2)</a><ul>
+<li><a class="reference internal" href="#install-apache2" id="id15">Install Apache2</a></li>
+<li><a class="reference internal" href="#test-web-server" id="id16">Test Web Server</a></li>
+<li><a class="reference internal" href="#serve-static-web" id="id17">Serve Static Web</a></li>
+<li><a class="reference internal" href="#ganti-document-root" id="id18">Ganti Document Root</a></li>
+<li><a class="reference internal" href="#multiple-web" id="id19">Multiple Web</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#file-sharing-samba" id="id16">File Sharing (Samba)</a></li>
-<li><a class="reference internal" href="#wireless-printer" id="id17">Wireless Printer</a></li>
+<li><a class="reference internal" href="#file-sharing-samba" id="id20">File Sharing (Samba)</a></li>
+<li><a class="reference internal" href="#wireless-printer" id="id21">Wireless Printer</a></li>
 </ul>
 </div>
 <p>Raspberrypi adalah sebuah board komputer mini. Raspberrypi bisa berfungsi
@@ -598,13 +602,159 @@ scp myfile.txt myfile2.txt pi&#64;192.168.1.3:
 scp *txt pi&#64;192.168.1.3:
 </pre>
 </div>
+<div class="section" id="resolusi-monitor">
+<h2><a class="toc-backref" href="#id10">Resolusi Monitor</a></h2>
+<p>Untuk ukuran monitor Philips pilih resolusi 1680x1050 60 Hz (16:10).</p>
+<p>Caranya adalah ketik sudo raspi-config di terminal kemudian</p>
+<ul class="simple">
+<li>navigasi ke Advanced Options</li>
+<li>navigasi ke  A5 Resolution</li>
+<li>pilih DMT Mode 58 1680x1050 60 Hz (16:10)</li>
+</ul>
+</div>
+<div class="section" id="setting-static-ip-address">
+<h2><a class="toc-backref" href="#id11">Setting Static IP Address</a></h2>
+<p>Buka file berikut:</p>
+<pre class="literal-block">
+sudo vim /etc/dhcpcd.conf
+</pre>
+<p>Tambahkan line berikut:</p>
+<pre class="literal-block">
+interface eth0
+static ip_address = 192.168.0.X
+static routers = 192.168.0.1
+static domain_name_servers=
+</pre>
+<p>Line tersebut sebenarnya berupa template yang sudah tersedia di file
+<tt class="docutils literal">dhcpcd.conf</tt> dalam bentuk <em>comment</em>.</p>
+<p>Selanjutnya bisa digunakan untuk komunikasi via metode berikut:</p>
+<ul class="simple">
+<li>SSH</li>
+</ul>
+<pre class="literal-block">
+ssh username&#64;ipaddress
+</pre>
+<ul class="simple">
+<li>Samba</li>
+</ul>
+<pre class="literal-block">
+smb://ipaddress
+</pre>
+<p>Note:</p>
+<ul class="simple">
+<li>Mengaktifkan LAN, maka wifi menjadi tidak jalan</li>
+<li>Solusi: pastikan <tt class="docutils literal">wpa_supplicant</tt> telah disetting sebagai berikut:</li>
+</ul>
+<pre class="literal-block">
+sudo vim /etc/wpa_supplicant/wpa_supplicant.conf
+</pre>
+<p>Isi dengan konten berikut:</p>
+<pre class="literal-block">
+network={
+   ssid=&quot;NETWORKNAME&quot;
+   psk=&quot;PASSWORD&quot;
+   scan_ssid=1
+   proto=RSN
+   key_mgmt=WPA-PSK
+   pairwise=CCMP TKIP
+   group=CCMP TKIP
+   id_str=&quot;home&quot;
+   priority=5
+}
+</pre>
+<ul class="simple">
+<li>Atur file <tt class="docutils literal">interfaces</tt></li>
+</ul>
+<pre class="literal-block">
+#backup
+sudo vim /etc/network/interfaces /etc/network/interfaces_BKP
+#edit file
+sudo vim /etc/network/interfaces
+</pre>
+<p>Isi dengan konten berikut:</p>
+<pre class="literal-block">
+auto lo
+iface lo inet loopback
+
+auto eth0
+allow-hotplug eth0
+iface eth0 inet static
+address 192.168.0.X
+netmask 255.255.255.0
+
+auto wlan0
+allow-hotplug wlan0
+iface wlan0 inet static
+wpa-conf /etc/wpa_supplicant/wpa_supplicant.conf
+address 192.168.2.X
+netmask 255.255.255.0
+brodcast 192.168.2.255
+gateway 192.168.2.1
+
+iface default inet dhcp
+</pre>
+<ul class="simple">
+<li>Tes koneksi</li>
+</ul>
+<p>via LAN : ssh <a class="reference external" href="mailto:pi&#64;192.168.0.X">pi&#64;192.168.0.X</a></p>
+<p>via Wifi: ssh <a class="reference external" href="mailto:pi&#64;192.168.2.X">pi&#64;192.168.2.X</a></p>
+<p><strong>Referensi</strong></p>
+<ul class="simple">
+<li><a class="reference external" href="http://www.knight-of-pi.org/de/paralleler-ethernet-und-wifi-zugriff-fuer-den-raspberry-pi-3/">parallel LAN and Wifi</a></li>
+<li><a class="reference external" href="https://raspberrypi.stackexchange.com/questions/8851/setting-up-wifi-and-ethernet">setting LAN and Wifi</a></li>
+</ul>
+</div>
+<div class="section" id="mounting-usb-drive">
+<h2><a class="toc-backref" href="#id12">Mounting USB Drive</a></h2>
+<p><strong>Kumpulkan Informasi Disk</strong></p>
+<ul class="simple">
+<li>Cari informasi mengenai disk, misalnya nama <tt class="docutils literal">device</tt>, <tt class="docutils literal">size</tt>, dan <tt class="docutils literal">type</tt></li>
+</ul>
+<pre class="literal-block">
+sudo fdisk -l
+</pre>
+<ul class="simple">
+<li>UUID</li>
+</ul>
+<p>UUID adalah ID untuk sebuah disk.</p>
+<pre class="literal-block">
+sudo ls -l /dev/disk/by-uuid/
+</pre>
+<p><strong>Mount USB drive secara otomatis</strong></p>
+<ul class="simple">
+<li>Buat folder untuk <em>mount point</em>. Misalnya /mnt/usb</li>
+<li>Buka file <tt class="docutils literal">/etc/fstab</tt></li>
+<li>Tambahkan line berikut di akhir line</li>
+</ul>
+<pre class="literal-block">
+UUID=2014-3D52(contoh)  /mnt/usb        vfat    uid=pi,gid=pi   0       0
+</pre>
+<p>Ganti UUID dengan UUID drive yang digunakan.</p>
+<ul class="simple">
+<li>Save dan exit</li>
+<li>Reboot atau coba dengan <em>command</em> berikut:</li>
+</ul>
+<pre class="literal-block">
+sudo mount -a
+</pre>
+<p><strong>Referensi</strong></p>
+<ul class="simple">
+<li><a class="reference external" href="https://raspberrytips.com/mount-usb-drive-raspberry-pi/">Mount a usb drive</a></li>
+</ul>
+</div>
+<div class="section" id="chmod-file-permission">
+<h2><a class="toc-backref" href="#id13">CHMOD: File Permission</a></h2>
+<ul class="simple">
+<li><a class="reference external" href="https://www.howtogeek.com/437958/how-to-use-the-chmod-command-on-linux/">howtogeek.com: chmod on linux</a></li>
+</ul>
+</div>
 </div>
 <div class="section" id="web-server-apache2">
-<h1><a class="toc-backref" href="#id10">Web Server (Apache2)</a></h1>
+<h1><a class="toc-backref" href="#id14">Web Server (Apache2)</a></h1>
 <!-- moving apache web root: https://www.digitalocean.com/community/tutorials/how-to-move-an-apache-web-root-to-a-new-location-on-ubuntu-16-04 -->
 <p>Berikut ini adalah tutorial untuk serve HTML files melalui HTTP menggunakan Apache2.</p>
 <div class="section" id="install-apache2">
-<h2><a class="toc-backref" href="#id11">Install Apache2</a></h2>
+<h2><a class="toc-backref" href="#id15">Install Apache2</a></h2>
 <p>Tutorialnya berikut ini didapat dari website Raspberrypi bagian <a class="reference external" href="https://www.raspberrypi.org/documentation/remote-access/web-server/apache.md">remote-access/web-server/apache</a>.</p>
 <p>Sebelum install, update package terlebih dahulu:</p>
 <pre class="literal-block">
@@ -620,16 +770,16 @@ var/www/html
 </pre>
 </div>
 <div class="section" id="test-web-server">
-<h2><a class="toc-backref" href="#id12">Test Web Server</a></h2>
+<h2><a class="toc-backref" href="#id16">Test Web Server</a></h2>
 <p>Secara default, di folder <tt class="docutils literal">var/www/html</tt> terdapat sebuah file <tt class="docutils literal">index.html</tt>. File tersebut bisa digunakan untuk test apakah web server berhasil diinstall.</p>
 <p>Untuk mengetesnya, bukalah <tt class="docutils literal"><span class="pre">http://IP-Address</span></tt>, contohnya <tt class="docutils literal"><span class="pre">http://192.168.1.10</span></tt>.</p>
 </div>
 <div class="section" id="serve-static-web">
-<h2><a class="toc-backref" href="#id13">Serve Static Web</a></h2>
+<h2><a class="toc-backref" href="#id17">Serve Static Web</a></h2>
 <p>Simpanlah file html anda di folder <tt class="docutils literal">var/www/html</tt>. Bukalah alamat web tersebut di browser.</p>
 </div>
 <div class="section" id="ganti-document-root">
-<h2><a class="toc-backref" href="#id14">Ganti Document Root</a></h2>
+<h2><a class="toc-backref" href="#id18">Ganti Document Root</a></h2>
 <p>Ini bertujuan agar data yang disimpan di usb drive dapat disajikan melalui web server.</p>
 <p>Sebelum mengganti <tt class="docutils literal">document root</tt>, <em>external storage</em> harus dimounting terlebih dahulu.
 Caranya ada website raspberrypi bagian <a class="reference external" href="https://www.raspberrypi.org/documentation/configuration/external-storage.md">configuration/external-storage</a>.</p>
@@ -712,7 +862,7 @@ sudo reboot
 <!-- https://pimylifeup.com/raspberry-pi-mount-usb-drive/ -->
 </div>
 <div class="section" id="multiple-web">
-<h2><a class="toc-backref" href="#id15">Multiple Web</a></h2>
+<h2><a class="toc-backref" href="#id19">Multiple Web</a></h2>
 <p>Berikut ini tutorial untuk menjalankan dua buah website secara lokal. Struktur folder html  yang
 saya gunakan adalah:</p>
 <pre class="literal-block">
@@ -786,7 +936,7 @@ sudo systemctl restart apache2
 </div>
 </div>
 <div class="section" id="file-sharing-samba">
-<h1><a class="toc-backref" href="#id16">File Sharing (Samba)</a></h1>
+<h1><a class="toc-backref" href="#id20">File Sharing (Samba)</a></h1>
 <p>Samba memungkinkan pertukaran data antara linux dengan windows melalui network dalam bentuk
 <tt class="docutils literal">shared folder</tt>. Berikut ini adalah cara-cara untuk menyetting samba:</p>
 <ul class="simple">
@@ -841,7 +991,7 @@ sudo systemctl restart smbd
 </ul>
 </div>
 <div class="section" id="wireless-printer">
-<h1><a class="toc-backref" href="#id17">Wireless Printer</a></h1>
+<h1><a class="toc-backref" href="#id21">Wireless Printer</a></h1>
 <p>Berikut ini adalah langkah-langkah untuk menjadikan usb printer menjadi wireless
 printer. Konsep dasarnya adalah dengan cara menghubungkan usb printer ke
 raspberryPi. Kemudian raspberryPi melakukan sharing ke network.</p>

@@ -195,6 +195,169 @@ Alternatifnya menggunakan sebuah *wildcard* untuk mengkopi semua file dengan eks
 
 .. _remote-access/ssh/scp: https://www.raspberrypi.org/documentation/remote-access/ssh/scp.md
 
+Resolusi Monitor
+*********************************************************************************
+
+Untuk ukuran monitor Philips pilih resolusi 1680x1050 60 Hz (16:10).
+
+Caranya adalah ketik sudo raspi-config di terminal kemudian
+
+- navigasi ke Advanced Options
+- navigasi ke  A5 Resolution
+- pilih DMT Mode 58 1680x1050 60 Hz (16:10)
+
+Setting Static IP Address
+*********************************************************************************
+
+Buka file berikut:
+
+::
+
+   sudo vim /etc/dhcpcd.conf
+
+Tambahkan line berikut:
+
+::
+
+   interface eth0
+   static ip_address = 192.168.0.X
+   static routers = 192.168.0.1
+   static domain_name_servers=
+
+Line tersebut sebenarnya berupa template yang sudah tersedia di file
+``dhcpcd.conf`` dalam bentuk *comment*. 
+
+Selanjutnya bisa digunakan untuk komunikasi via metode berikut:
+
+- SSH
+
+::
+
+   ssh username@ipaddress
+
+- Samba
+
+::
+
+   smb://ipaddress
+
+Note:
+
+- Mengaktifkan LAN, maka wifi menjadi tidak jalan
+- Solusi: pastikan ``wpa_supplicant`` telah disetting sebagai berikut:
+
+::
+
+   sudo vim /etc/wpa_supplicant/wpa_supplicant.conf
+
+Isi dengan konten berikut:
+
+::
+
+   network={
+      ssid="NETWORKNAME"
+      psk="PASSWORD"
+      scan_ssid=1
+      proto=RSN
+      key_mgmt=WPA-PSK
+      pairwise=CCMP TKIP
+      group=CCMP TKIP
+      id_str="home"
+      priority=5
+   }
+
+- Atur file ``interfaces``    
+
+::
+
+   #backup
+   sudo vim /etc/network/interfaces /etc/network/interfaces_BKP
+   #edit file
+   sudo vim /etc/network/interfaces
+
+Isi dengan konten berikut:
+
+::
+
+   auto lo
+   iface lo inet loopback
+
+   auto eth0
+   allow-hotplug eth0
+   iface eth0 inet static
+   address 192.168.0.X
+   netmask 255.255.255.0
+
+   auto wlan0
+   allow-hotplug wlan0
+   iface wlan0 inet static
+   wpa-conf /etc/wpa_supplicant/wpa_supplicant.conf
+   address 192.168.2.X
+   netmask 255.255.255.0
+   brodcast 192.168.2.255
+   gateway 192.168.2.1
+
+   iface default inet dhcp
+
+- Tes koneksi
+
+via LAN : ssh pi@192.168.0.X
+
+via Wifi: ssh pi@192.168.2.X
+
+**Referensi**
+
+- `parallel LAN and Wifi <http://www.knight-of-pi.org/de/paralleler-ethernet-und-wifi-zugriff-fuer-den-raspberry-pi-3/>`_
+- `setting LAN and Wifi <https://raspberrypi.stackexchange.com/questions/8851/setting-up-wifi-and-ethernet>`_
+
+Mounting USB Drive
+*********************************************************************************
+
+**Kumpulkan Informasi Disk**
+
+- Cari informasi mengenai disk, misalnya nama ``device``, ``size``, dan ``type``
+
+::
+
+        sudo fdisk -l
+
+- UUID
+
+UUID adalah ID untuk sebuah disk. 
+
+::
+
+        sudo ls -l /dev/disk/by-uuid/
+
+**Mount USB drive secara otomatis**
+
+
+- Buat folder untuk *mount point*. Misalnya /mnt/usb
+- Buka file ``/etc/fstab``
+- Tambahkan line berikut di akhir line
+
+::
+
+        UUID=2014-3D52(contoh)  /mnt/usb        vfat    uid=pi,gid=pi   0       0
+
+Ganti UUID dengan UUID drive yang digunakan. 
+
+- Save dan exit
+- Reboot atau coba dengan *command* berikut:
+
+::
+
+        sudo mount -a
+
+**Referensi**
+
+- `Mount a usb drive <https://raspberrytips.com/mount-usb-drive-raspberry-pi/>`_
+
+CHMOD: File Permission
+*********************************************************************************
+
+- `howtogeek.com: chmod on linux <https://www.howtogeek.com/437958/how-to-use-the-chmod-command-on-linux/>`_
+
 
 Web Server (Apache2)
 -------------------------------------------------------------------------------------------
