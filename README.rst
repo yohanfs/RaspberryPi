@@ -383,6 +383,12 @@ Kemudian install ``apache2``:
 
         sudo apt install apache2 -y
 
+Untuk cek versi apache2:
+
+::
+
+        sudo apache2 -v
+
 Setelah instalasi, maka akan dibuatkan folder dengan path berikut:
 
 ::
@@ -688,6 +694,105 @@ raspberryPi. Kemudian raspberryPi melakukan sharing ke network.
 - `Add a printer to a raspberry
   <https://www.howtogeek.com/169679/how-to-add-a-printer-to-your-raspberry-pi-or-other-linux-computer/>`_
 
+DNS Server
+---------------------------------------------------------------------------------
+
+DNS adalah singkatan dari *Domain Name System*. DNS berguna untuk menterjemahkan
+nama domain ke *IP addresses*. Dalam sebuah jaringan, *devices* hanya
+berkomunikasi menggunakan  *IP addresses* dan membutuhkan DNS server untuk
+mengkonversi *host name* ke IP. 
+
+**Install dnsmasq di Raspberry Pi**
+
+::
+
+	$ sudo apt-get update
+	$ sudo apt install dnsmasq
+
+**Konfigurasi DNS**
+
+- Buka 
+
+::
+
+	$ sudo vim /etc/dnsmasq.conf
+
+- Comment out 3 baris code berikut
+
+::
+
+	domain-needed
+	bogus-priv
+	expand-hosts
+
+- Tambahkan juga domain berikut
+
+::
+
+	domain=ysi
+
+domain tersebut bisa diisi bebas. Pada contoh ini adalah ysi.
+
+Jika ada sebuah *host* namanya **contoh**, itu dapat diakses dengan
+**contoh.ysi**.
+
+- Exit dan restart dnsmasq
+
+::
+
+	$ sudo service dnsmasq restart
+
+**Edit local host**
+
+- Buka file
+
+::
+
+	$ sudo vim /etc/hosts
+
+- Tambahkan IP Address dan nama domain
+
+::
+
+	192.168.1.17 	contoh
+
+- Save
+
+Sekarang Raspberry Pi dapat menggunakan **contoh** sebagai nama host. 
+
+**Tes**
+
+Tes dijalankan di komputer lain yang terhubung ke network.
+
+- buka command line
+- start nslookup
+
+::
+
+	$ nslookup
+
+- secara default nslookup menggunakan DNS saat ini, untuk menggantinya bisa
+  mengetikkan 
+
+::
+
+	$ server A.B.C.C
+
+Ganti A.B.C.D dengan IP Address.
+
+Kemudian ketikkan **contoh.ysi**.
+
+**Komputer Klien**
+
+Aturlah DNS di komputer yang terhubung ke network agar bisa menggunakan nama
+domain yang terdapat pada dns server (Raspberry Pi pada kasus ini). 
+
+- `how to use your Raspberry Pi as a DNS server`_
 
 
 
+
+
+.. Referensi
+
+.. _`how to use your Raspberry Pi as a DNS server`: https://raspberrytips.com/raspberry-pi-dns-server/
