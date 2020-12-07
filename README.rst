@@ -503,7 +503,9 @@ Tambahkan line berikut dengan UUID dan Type yang telah didapatkan sebelumnya.
 
 Setelah melakukan hal di atas barulah ganti ``document root``. File yang perlu diedit adalah:
 
-- etc/apache2/sites-available/000-default.conf
+::
+
+        $ sudo vim /etc/apache2/sites-available/000-default.conf
 
 Tutorialnya ada di website `digitalocean-change-web-root`_.
 
@@ -541,62 +543,85 @@ Sementara struktur folder dari apache2 adalah:
         | ├── sites-available          
         | │   ├── 000-default.conf
         | │   ├── default-ssl.conf
-        | │   └── myweb.conf
+        | │   ├── cs.conf
+        | │   └── phd.conf
         | ├── sites-enabled          
-        | │   └── myweb.conf
+        | │   ├── cs.conf
+        | │   └── phd.conf
         | ├── envvars
         | ├── magic
         | ├── ports.conf
         | └── apache2.conf
 
-Pengaturan yang dilakukan adalah pada file myweb.conf. Isinya sebagai berikut:
+
+Isi file ``cs.conf``:
 
 ::
 
-        <VirtualHost *.80>
-                ServerName 192.168.x.xxx:80
-                Alias /phd /mnt/ysi/www/phd
-                Alias /cs /mnt/ysi/www/cs
-                DocumentRoot /mnt/ysi/www/
-                <Directory /mnt/ysi/www/phd>
-                        Order deny,allow
-                        Allow from all
-                        Options FollowSymLinks
-                </Directory>
-                <Directory /mnt/ysi/www/cs>
-                        Order deny,allow
-                        Allow from all
-                        Options FollowSymLinks
-                </Directory>
+        <VirtualHost *:81>
+                ServerName cs
+                ServerAlias www.cs.com
+                DocumentRoot /mnt/ysi/www/cs
+                ErrorLog ${APACHE_LOG_DIR}/cs_error.log
+                CustomLog ${APACHE_LOG_FIR}/cs_access.log combined
         </VirtualHost>
 
-Gantilah ``ServerName`` dengan IP Address komputer yang digunakan. 
 
-Sebelum bisa digunakan, ``myweb.conf`` harus diaktifkan:
+Isi file ``phd.conf``:
 
 ::
 
-        sudo a2ensite myweb.conf
+        <VirtualHost *:80>
+                ServerName phd
+                ServerAlias www.phd.com
+                DocumentRoot /mnt/ysi/www/phd
+                ErrorLog ${APACHE_LOG_DIR}/phd_error.log
+                CustomLog ${APACHE_LOG_FIR}/phd_access.log combined
+        </VirtualHost>
+
+
+Sebelum bisa digunakan, ``cs.conf`` dan ``phd.conf`` harus diaktifkan:
+
+::
+
+        $ sudo a2ensite cs.conf
+
+::
+        
+        $ sudo a2ensite phd.conf
+
 
 Untuk menonaktifkan:
 
 ::
 
-        sudo a2dissite myweb.conf
+        $ sudo a2dissite cs.conf
+
+Pengaturan ports dilakukan di:
+
+::
+
+        $ sudo vim /etc/apache2/ports.conf
+
+Isi file ``ports.conf``:
+
+::
+
+        Listen 80
+        Listen 81
 
 Kemudian restart apache:
 
 ::
 
-        sudo systemctl restart apache2
-
+        $ sudo systemctl restart apache2
 
 Untuk mengakses website, bukalah browser kemudian ketikkan address berikut:
 
 ::
 
-        192.168.x.xxx/cs
-        192.168.x.xxx/phd
+        192.168.x.xxx:80
+        192.168.x.xxx:81
 
 **Referensi**
 

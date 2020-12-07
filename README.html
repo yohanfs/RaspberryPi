@@ -4,7 +4,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="Docutils 0.16: http://docutils.sourceforge.net/" />
-<title>Raspberrypi</title>
+<title>Raspberry Pi</title>
 <style type="text/css">
 
 /*! normalize.css v2.1.3 | MIT License | git.io/normalize */
@@ -435,8 +435,8 @@ html,body{        margin: auto;
 </style>
 </head>
 <body>
-<div class="document" id="raspberrypi">
-<h1 class="title">Raspberrypi</h1>
+<div class="document" id="raspberry-pi">
+<h1 class="title">Raspberry Pi</h1>
 
 <div class="contents topic" id="daftar-isi">
 <p class="topic-title">Daftar Isi</p>
@@ -860,9 +860,9 @@ UUID=[UUID] /mnt/myusb [TYPE] gid=1000,uid=1000,dmask=027,umask=022 0 1
 sudo reboot
 </pre>
 <p>Setelah melakukan hal di atas barulah ganti <tt class="docutils literal">document root</tt>. File yang perlu diedit adalah:</p>
-<ul class="simple">
-<li>etc/apache2/sites-available/000-default.conf</li>
-</ul>
+<pre class="literal-block">
+$ sudo vim /etc/apache2/sites-available/000-default.conf
+</pre>
 <p>Tutorialnya ada di website <a class="reference external" href="https://www.digitalocean.com/community/tutorials/how-to-move-an-apache-web-root-to-a-new-location-on-ubuntu-16-04">digitalocean-change-web-root</a>.</p>
 <!-- https://pimylifeup.com/raspberry-pi-mount-usb-drive/ -->
 </div>
@@ -888,50 +888,64 @@ adalah folder-folder yang berisi static html.</p>
 | â”œâ”€â”€ sites-available
 | â”‚   â”œâ”€â”€ 000-default.conf
 | â”‚   â”œâ”€â”€ default-ssl.conf
-| â”‚   â””â”€â”€ myweb.conf
+| â”‚   â”œâ”€â”€ cs.conf
+| â”‚   â””â”€â”€ phd.conf
 | â”œâ”€â”€ sites-enabled
-| â”‚   â””â”€â”€ myweb.conf
+| â”‚   â”œâ”€â”€ cs.conf
+| â”‚   â””â”€â”€ phd.conf
 | â”œâ”€â”€ envvars
 | â”œâ”€â”€ magic
 | â”œâ”€â”€ ports.conf
 | â””â”€â”€ apache2.conf
 </pre>
-<p>Pengaturan yang dilakukan adalah pada file myweb.conf. Isinya sebagai berikut:</p>
+<p>Isi file <tt class="docutils literal">cs.conf</tt>:</p>
 <pre class="literal-block">
-&lt;VirtualHost *.80&gt;
-        ServerName 192.168.x.xxx:80
-        Alias /phd /mnt/ysi/www/phd
-        Alias /cs /mnt/ysi/www/cs
-        DocumentRoot /mnt/ysi/www/
-        &lt;Directory /mnt/ysi/www/phd&gt;
-                Order deny,allow
-                Allow from all
-                Options FollowSymLinks
-        &lt;/Directory&gt;
-        &lt;Directory /mnt/ysi/www/cs&gt;
-                Order deny,allow
-                Allow from all
-                Options FollowSymLinks
-        &lt;/Directory&gt;
+&lt;VirtualHost *:81&gt;
+        ServerName cs
+        ServerAlias www.cs.com
+        DocumentRoot /mnt/ysi/www/cs
+        ErrorLog ${APACHE_LOG_DIR}/cs_error.log
+        CustomLog ${APACHE_LOG_FIR}/cs_access.log combined
 &lt;/VirtualHost&gt;
 </pre>
-<p>Gantilah <tt class="docutils literal">ServerName</tt> dengan IP Address komputer yang digunakan.</p>
-<p>Sebelum bisa digunakan, <tt class="docutils literal">myweb.conf</tt> harus diaktifkan:</p>
+<p>Isi file <tt class="docutils literal">phd.conf</tt>:</p>
 <pre class="literal-block">
-sudo a2ensite myweb.conf
+&lt;VirtualHost *:80&gt;
+        ServerName phd
+        ServerAlias www.phd.com
+        DocumentRoot /mnt/ysi/www/phd
+        ErrorLog ${APACHE_LOG_DIR}/phd_error.log
+        CustomLog ${APACHE_LOG_FIR}/phd_access.log combined
+&lt;/VirtualHost&gt;
+</pre>
+<p>Sebelum bisa digunakan, <tt class="docutils literal">cs.conf</tt> dan <tt class="docutils literal">phd.conf</tt> harus diaktifkan:</p>
+<pre class="literal-block">
+$ sudo a2ensite cs.conf
+</pre>
+<pre class="literal-block">
+$ sudo a2ensite phd.conf
 </pre>
 <p>Untuk menonaktifkan:</p>
 <pre class="literal-block">
-sudo a2dissite myweb.conf
+$ sudo a2dissite cs.conf
+</pre>
+<p>Pengaturan ports dilakukan di:</p>
+<pre class="literal-block">
+$ sudo vim /etc/apache2/ports.conf
+</pre>
+<p>Isi file <tt class="docutils literal">ports.conf</tt>:</p>
+<pre class="literal-block">
+Listen 80
+Listen 81
 </pre>
 <p>Kemudian restart apache:</p>
 <pre class="literal-block">
-sudo systemctl restart apache2
+$ sudo systemctl restart apache2
 </pre>
 <p>Untuk mengakses website, bukalah browser kemudian ketikkan address berikut:</p>
 <pre class="literal-block">
-192.168.x.xxx/cs
-192.168.x.xxx/phd
+192.168.x.xxx:80
+192.168.x.xxx:81
 </pre>
 <p><strong>Referensi</strong></p>
 <ul class="simple">
@@ -1027,6 +1041,79 @@ sudo usermod -a -G lpadmin pi
 nama domain ke <em>IP addresses</em>. Dalam sebuah jaringan, <em>devices</em> hanya
 berkomunikasi menggunakan  <em>IP addresses</em> dan membutuhkan DNS server untuk
 mengkonversi <em>host name</em> ke IP.</p>
+<p><strong>Install dnsmasq di Raspberry Pi</strong></p>
+<pre class="literal-block">
+$ sudo apt-get update
+$ sudo apt install dnsmasq
+</pre>
+<p><strong>Konfigurasi DNS</strong></p>
+<ul class="simple">
+<li>Buka</li>
+</ul>
+<pre class="literal-block">
+$ sudo vim /etc/dnsmasq.conf
+</pre>
+<ul class="simple">
+<li>Comment out 3 baris code berikut</li>
+</ul>
+<pre class="literal-block">
+domain-needed
+bogus-priv
+expand-hosts
+</pre>
+<ul class="simple">
+<li>Tambahkan juga domain berikut</li>
+</ul>
+<pre class="literal-block">
+domain=ysi
+</pre>
+<p>domain tersebut bisa diisi bebas. Pada contoh ini adalah ysi.</p>
+<p>Jika ada sebuah <em>host</em> namanya <strong>contoh</strong>, itu dapat diakses dengan
+<strong>contoh.ysi</strong>.</p>
+<ul class="simple">
+<li>Exit dan restart dnsmasq</li>
+</ul>
+<pre class="literal-block">
+$ sudo service dnsmasq restart
+</pre>
+<p><strong>Edit local host</strong></p>
+<ul class="simple">
+<li>Buka file</li>
+</ul>
+<pre class="literal-block">
+$ sudo vim /etc/hosts
+</pre>
+<ul class="simple">
+<li>Tambahkan IP Address dan nama domain</li>
+</ul>
+<pre class="literal-block">
+192.168.1.17    contoh
+</pre>
+<ul class="simple">
+<li>Save</li>
+</ul>
+<p>Sekarang Raspberry Pi dapat menggunakan <strong>contoh</strong> sebagai nama host.</p>
+<p><strong>Tes</strong></p>
+<p>Tes dijalankan di komputer lain yang terhubung ke network.</p>
+<ul class="simple">
+<li>buka command line</li>
+<li>start nslookup</li>
+</ul>
+<pre class="literal-block">
+$ nslookup
+</pre>
+<ul class="simple">
+<li>secara default nslookup menggunakan DNS saat ini, untuk menggantinya bisa
+mengetikkan</li>
+</ul>
+<pre class="literal-block">
+$ server A.B.C.C
+</pre>
+<p>Ganti A.B.C.D dengan IP Address.</p>
+<p>Kemudian ketikkan <strong>contoh.ysi</strong>.</p>
+<p><strong>Komputer Klien</strong></p>
+<p>Aturlah DNS di komputer yang terhubung ke network agar bisa menggunakan nama
+domain yang terdapat pada dns server (Raspberry Pi pada kasus ini).</p>
 <ul class="simple">
 <li><a class="reference external" href="https://raspberrytips.com/raspberry-pi-dns-server/">how to use your Raspberry Pi as a DNS server</a></li>
 </ul>
