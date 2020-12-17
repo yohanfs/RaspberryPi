@@ -67,10 +67,6 @@ Ganti Hostname
 
 Default hostname-nya adalah ``pi@raspberrypi``. Hostname tersebut bisa diganti dengan cara:
 
-.. warning::
-
-        Text editor yang digunakan adalah vim
-
 ::
 
         sudo vim /etc/hostname
@@ -631,6 +627,56 @@ Untuk mengakses website, bukalah browser kemudian ketikkan address berikut:
 
 .. _digitalocean-setup-virtual-hosts: https://www.digitalocean.com/community/tutorials/how-to-set-up-apache-virtual-hosts-on-ubuntu-18-04
 .. _pimylifeup-setup-apache-web-server: https://pimylifeup.com/raspberry-pi-apache/
+
+Web Server (Nginx - Docker)
+-------------------------------------------------------------------------------------------
+
+Berikut ini adalah cara menjalankan Nginx menggunakan docker. 
+
+Struktur foldernya adalah sebagai berikut:
+
+::
+
+    web
+    ├── conf          
+    │   └── default.conf
+    ├── html         
+    └── docker-compose.yml
+
+Isi default.conf:
+
+::
+
+	server {
+	    location / {
+	       root /var/www/html;
+	       try_files $uri $uri/index.html $uri.html =404;
+	    }
+	  }
+
+Isi docker-compose.yml:
+
+::
+
+	version: '3.1'
+
+	services:
+	   web:
+	     image: nginx
+	     container_name: w3
+	     ports:
+	       - 80:80
+	     restart: always
+	     volumes:
+	       - ./html:/var/www/html
+	       - ./conf/default.conf:/etc/nginx/conf.d/default.conf
+
+Kemudian jalankan:
+
+::
+
+	$ docker-compose up -d
+
 
 File Sharing (Samba)
 -------------------------------------------------------------------------------------------
