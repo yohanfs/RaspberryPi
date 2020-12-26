@@ -771,7 +771,9 @@ DNS Server
 DNS adalah singkatan dari *Domain Name System*. DNS berguna untuk menterjemahkan
 nama domain ke *IP addresses*. Dalam sebuah jaringan, *devices* hanya
 berkomunikasi menggunakan  *IP addresses* dan membutuhkan DNS server untuk
-mengkonversi *host name* ke IP. 
+mengkonversi *host name* ke IP. Untuk keperluan tertentu, misalnya menambahkan
+*custom* domain untuk *home networking*, dns server bisa diinstall di Raspberry
+Pi.  
 
 **Install dnsmasq di Raspberry Pi**
 
@@ -788,48 +790,31 @@ mengkonversi *host name* ke IP.
 
 	$ sudo vim /etc/dnsmasq.conf
 
-- Comment out 3 baris code berikut
+- Comment out atau tambahkan code berikut
 
 ::
 
 	domain-needed
 	bogus-priv
 	expand-hosts
+	no-resolv
+	server=8.8.8.8
+	server=8.8.4.4
 
-- Tambahkan juga domain berikut
+	#custom domain
+	address=/contoh.ysi/192.168.2.113
 
-::
+	expand-hosts
+	cache-size=1000
 
-	domain=ysi
-
-domain tersebut bisa diisi bebas. Pada contoh ini adalah ysi.
-
-Jika ada sebuah *host* namanya **contoh**, itu dapat diakses dengan
-**contoh.ysi**.
+	dchp-mac=....
+	dchp-reply-delay=....
 
 - Exit dan restart dnsmasq
 
 ::
 
 	$ sudo service dnsmasq restart
-
-**Edit local host**
-
-- Buka file
-
-::
-
-	$ sudo vim /etc/hosts
-
-- Tambahkan IP Address dan nama domain
-
-::
-
-	192.168.1.17 	contoh
-
-- Save
-
-Sekarang Raspberry Pi dapat menggunakan **contoh** sebagai nama host. 
 
 **Tes**
 
@@ -855,10 +840,31 @@ Kemudian ketikkan **contoh.ysi**.
 
 **Komputer Klien**
 
-Aturlah DNS di komputer yang terhubung ke network agar bisa menggunakan nama
+Aturlah DNS di komputer/*mobile phone* yang terhubung ke network agar bisa menggunakan nama
 domain yang terdapat pada dns server (Raspberry Pi pada kasus ini). 
 
+**Referensi**
+
 - `how to use your Raspberry Pi as a DNS server`_
+- `deviceplus: raspberry pi as a DNS server`_
+- `pimylifeup: raspberry pi a DNS server`_
+
+Local Hostname
+---------------------------------------------------------------------------------
+
+- Buka file
+
+::
+
+	$ sudo vim /etc/hosts
+
+- Tambahkan IP Address dan nama domain
+
+::
+
+	192.168.1.17 	contoh.ysi
+
+
 
 
 
@@ -867,3 +873,5 @@ domain yang terdapat pada dns server (Raspberry Pi pada kasus ini).
 .. Referensi
 
 .. _`how to use your Raspberry Pi as a DNS server`: https://raspberrytips.com/raspberry-pi-dns-server/
+.. _`deviceplus: raspberry pi as a DNS server`: https://www.deviceplus.com/raspberry-pi/how-to-use-a-raspberry-pi-as-a-dns-server/
+.. _`pimylifeup: raspberry pi a DNS server`: https://pimylifeup.com/raspberry-pi-dns-server/
