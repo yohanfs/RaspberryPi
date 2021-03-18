@@ -3,7 +3,7 @@ Raspberry Pi
 
 .. contents:: Daftar Isi
 
-Raspberrypi adalah sebuah board komputer mini. Raspberrypi bisa berfungsi
+Raspberry Pi adalah sebuah board komputer mini. Raspberry Pi bisa berfungsi
 sebagai desktop komputer pada umumnya. 
 
 Panduan untuk mulai menggunakan raspberrypi terdapat di `website raspberrypi`_.
@@ -15,7 +15,73 @@ Beberapa pengaturan awal yang saya lakukan setelah sistem operasi diinstall:
 Getting Started
 -------------------------------------------------------------------------------------------
 
-Setting Wifi (Headless)
+Install OS
+*******************************************************************************************
+
+*Operating system* (OS) diinstall dengan cara melakukan flash sebuah image (OS)
+pada sebuah microSD. Flash tersebut dilakukan menggunakan sebuah *software*
+yang diinstall di komputer (laptop/desktop). Ada banyak *software* yang tersedia
+untuk melakukan flash, misalnya **Raspberry Pi Imager** dan **BalenaEtcher**. 
+
+Official OS untuk Raspberry Pi adalah **Raspberry Pi OS**. Tetapi, ada juga OS
+dari *third parties*, misalnya Ubuntu. 
+
+Setelah selesai flash, kemudian microSD dimasukkan ke *port* di Raspberry Pi.
+Selain itu, diperlukan keyboard, mouse, dan monitor untuk melakukan pengaturan
+selanjutnya. 
+
+Apabila tidak tersedia keyboard, mouse, dan monitor, maka pengaturan bisa
+dilakukan secara *headless*. Ini dilakukan dengan cara mengatur Raspberry Pi via
+*client computer*. Protokol yang digunakan adalah SSH dan VNC. Namun, SSH dan
+VNC secara default berada dalam kondisi disable. Oleh karena itu, perlu
+di-enable kan untuk penggunaan pertama kalinya.
+
+Kapasitas microSD yang diperlukan sekitas 4 GB. Apabila flash dilakukan ke
+microSD yang kapasitasnya besar, maka sisa kapasitas tidak dapat akan digunakan
+dikarenakan menjadi *unallocated storage*. Supaya dapat digunakan, gunakanlah
+gpated (linux) untuk memperbesar *storage* tersebut. 
+
+
+Enable SSH
+*******************************************************************************************
+
+Secara default, ssh dalam kondisi disable. SSH perlu diaktifkan dengan cara
+membuat file ssh sebagai berikut:
+
+::
+
+    $ touch /media/user/boot/ssh
+
+Selanjutnya, koneksi bisa dijalankan dengan cara:
+
+::
+
+    $ ssh pi@ip-address
+
+Enable VNC
+*******************************************************************************************
+
+Caranya adalah:
+
+::
+
+    $ sudo raspi-config
+
+Kemudian, pilih interface options > VNC.
+
+Selanjutnya masukkanlah IP Address di VNC viewer yang terinstall di *client
+computer**. Apabila ada *issue* dengan *warning** berikut ini, jalankanlah:
+
+::
+
+    cannot currently show the desktop
+
+- ``sudo raspi-config``
+- pilih **Display Options**.
+- kemudian pilih salah satu resolusi yang ada di pilihan. 
+
+
+Setting Wifi
 *******************************************************************************************
 
 Wifi di Raspberrypi dapat diatur walaupun tidak melalui keyboard dan monitor secara
