@@ -10,8 +10,6 @@ Panduan untuk mulai menggunakan raspberrypi terdapat di `website raspberrypi`_.
 Di website tersebut terdapat informasi perihal kelengkapan perangkat, install
 sistem operasi, dan pengaturan lainnya.
 
-Beberapa pengaturan awal yang saya lakukan setelah sistem operasi diinstall:
-
 Getting Started
 -------------------------------------------------------------------------------------------
 
