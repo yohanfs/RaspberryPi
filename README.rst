@@ -928,10 +928,36 @@ Local Hostname
 
 	192.168.1.17 	contoh.ysi
 
+VPN
+---------------------------------------------------------------------------------
 
+VPN berguna agar home networking bisa diakses dari luar jaringan. 
 
+**Install PiVPN di Rpi**
 
+- PiVPN automated installer [Ok]
+- Static IP needed [Ok]
+- DHCP reservation [Yes]
+- Local users [Ok]
+- Choose a user  [pi]
+- Installation mode [WireGuard]
+- Installation packages
+- Default wireguard port [51820]
+- Confirm custom port number [Yes]
+- DNS provider [Google]
+- Public IP or DNS [Use this public IP]
+- Server information
+- Unattended upgrades
+- Installation complete!
+    + create profile: $ pivpn add
+    + show qr code: $ pivpn -qr
+- Setting port-mapping di router
+    + pilih udp protocol
+- Install WireGuard di Iphone > scan qr code
 
+**Referensi**
+
+`Youtube: Install PiVPN <https://www.youtube.com/watch?v=zsN47t2r_WU>`_
 
 
 .. Referensi
