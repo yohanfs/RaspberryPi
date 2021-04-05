@@ -944,25 +944,29 @@ VPN berguna agar home networking bisa diakses dari luar jaringan.
 
 - Ikuti instruksi install. Gunakan konfigurasi berikut:   
 
-- PiVPN automated installer [Ok]
-- Static IP needed [Ok]
-- DHCP reservation [Yes]
-- Local users [Ok]
-- Choose a user  [pi]
-- Installation mode [WireGuard]
-- Installation packages
-- Wireguard port [default 51820] > bisa pakai port yang lain
-- Confirm custom port number [Yes]
-- DNS provider [Google]
-- Public IP or DNS [Use this public IP]
-- Server information
-- Unattended upgrades
-- Installation complete!
-    + create profile: $ pivpn add
-    + show qr code: $ pivpn -qr
-- Setting port-mapping di router
-    + pilih udp protocol
-- Install WireGuard di Iphone > scan qr code
+    - PiVPN automated installer [Ok]
+    - Static IP needed [Ok]
+    - DHCP reservation [Yes]
+    - Local users [Ok]
+    - Choose a user  [pi]
+    - Installation mode [WireGuard]
+    - Installation packages
+    - Wireguard port [default 51820] > bisa pakai port yang lain
+    - Confirm custom port number [Yes]
+    - DNS provider [Google]
+    - Public IP or DNS [Use this public IP]
+    - Server information
+    - Unattended upgrades
+    - Installation complete!
+        + create profile: $ pivpn add
+        + show qr code: $ pivpn -qr
+        + config file disimpan di ~/configs
+    - Setting port-mapping di router
+        + pilih udp protocol
+    - Install WireGuard Client
+        + Iphone > scan qr code
+        + MacOS dan Windows > install app kemudian import config file
+        + Ubuntu > belum berhasil
 
 **Referensi**
 
