@@ -935,6 +935,15 @@ VPN berguna agar home networking bisa diakses dari luar jaringan.
 
 **Install PiVPN di Rpi**
 
+- Buka terminal
+- Jalankan:
+
+::
+
+    curl -L https://install.pivpn.io | bash
+
+- Ikuti instruksi install. Gunakan konfigurasi berikut:   
+
 - PiVPN automated installer [Ok]
 - Static IP needed [Ok]
 - DHCP reservation [Yes]
@@ -942,7 +951,7 @@ VPN berguna agar home networking bisa diakses dari luar jaringan.
 - Choose a user  [pi]
 - Installation mode [WireGuard]
 - Installation packages
-- Default wireguard port [51820]
+- Wireguard port [default 51820] > bisa pakai port yang lain
 - Confirm custom port number [Yes]
 - DNS provider [Google]
 - Public IP or DNS [Use this public IP]
@@ -957,7 +966,8 @@ VPN berguna agar home networking bisa diakses dari luar jaringan.
 
 **Referensi**
 
-`Youtube: Install PiVPN <https://www.youtube.com/watch?v=zsN47t2r_WU>`_
+- `Install PiVPN <https://www.pivpn.io/>`_
+- `Youtube: Install PiVPN <https://www.youtube.com/watch?v=zsN47t2r_WU>`_
 
 
 .. Referensi
