@@ -68,7 +68,7 @@ Caranya adalah:
 Kemudian, pilih interface options > VNC.
 
 Selanjutnya masukkanlah IP Address di VNC viewer yang terinstall di *client
-computer**. Apabila ada *issue* dengan *warning** berikut ini, jalankanlah:
+computer*. Apabila ada *issue* dengan *warning* berikut ini, jalankanlah:
 
 ::
 
@@ -215,28 +215,24 @@ Secure Copy (SCP)
 Kopi data antar 2 komputer bisa menggunakan ``secure copy`` (SCP). Tutorialnya ada di
 website Raspberrypi bagian `remote-access/ssh/scp`_.
 
-**Kopi ke Raspberry Pi**
-
-Kopi file ``myfile.txt`` dari komputer ke ``pi`` user's home folder di IP address 
-192.168.1.3 adalah:
+**Command Kopi File**
 
 ::
 
-        scp myfile.txt pi@192.168.1.3:
+    scp filename user@hostname:"complete path"
 
-Kopi ke folder ``/home/pi/project/``. Syaratnya folder project harus sudah dibuat
+Misalnya:
 
 ::
 
-        scp myfile.txt pi@192.168.1.3:project/
+    scp filename.txt pi@192.168.2.100:"/mnt/data"
 
-**Kopi file dari Raspberry Pi**
+**Command Kopi Folder**
 
-Kopi file ``myfile.txt`` dari Raspberry Pi ke current directory di sebuah komputer
+::
+    
+    scp -rp folder user@hostname:"complete path"
 
-:: 
-
-        scp pi@192.168.1.3:myfile.txt .
 
 **Kopi Multiple Files**
 
@@ -250,7 +246,13 @@ Alternatifnya menggunakan sebuah *wildcard* untuk mengkopi semua file dengan eks
 
         scp *txt pi@192.168.1.3:
 
+**Note**
 
+Jika *complete path* tidak diberikan, maka file akan tersimpan di:
+
+::
+
+    /home/user/
 
 
 .. _remote-access/ssh/scp: https://www.raspberrypi.org/documentation/remote-access/ssh/scp.md
@@ -409,6 +411,15 @@ Ganti UUID dengan UUID drive yang digunakan.
 
         sudo mount -a
 
+Note:
+
+Jika format storage-nya adalah ntfs, maka install:
+
+::
+
+    $ sudo apt-get update
+    $ sudo apt install ntfs-3g
+
 **Referensi**
 
 - `Mount a usb drive <https://raspberrytips.com/mount-usb-drive-raspberry-pi/>`_
@@ -418,6 +429,12 @@ CHMOD: File Permission
 
 - `howtogeek.com: chmod on linux <https://www.howtogeek.com/437958/how-to-use-the-chmod-command-on-linux/>`_
 
+
+Softwares
+-------------------------------------------------------------------------------------------
+
+- Vim
+- Git  
 
 Web Server (Apache2)
 -------------------------------------------------------------------------------------------
