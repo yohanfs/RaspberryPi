@@ -990,6 +990,17 @@ VPN berguna agar home networking bisa diakses dari luar jaringan.
 - `Install PiVPN <https://www.pivpn.io/>`_
 - `Youtube: Install PiVPN <https://www.youtube.com/watch?v=zsN47t2r_WU>`_
 
+Boot dari USB
+---------------------------------------------------------------------------------
+
+- Jalankan Rpi dengan sd card
+- Update dan upgrade
+   + sudo apt update
+   + sudo apt full-upgrade
+- Ganti boot order
+   + sudo raspi-config > advanced options > A6 boot order > usb boot > reboot
+- Clone sd card ke usb storage (flashdrive/ssd)
+
 
 .. Referensi
 
