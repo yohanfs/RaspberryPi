@@ -78,6 +78,21 @@ computer*. Apabila ada *issue* dengan *warning* berikut ini, jalankanlah:
 - pilih **Display Options**.
 - kemudian pilih salah satu resolusi yang ada di pilihan. 
 
+IP Address
+*******************************************************************************************
+
+IP Address akan di-assign oleh router melalui DHCP. Oleh karenanya, IP Address
+dapat diketahui dengan cara login ke pengaturan router via web.
+
+Cara lainnya adalah dengan menjalankan:
+
+::
+
+    arp -a
+
+IP Address yang dialokasikan oleh DHCP bisa berubah secara dinamis. Agar tidak
+berubah, reservasi IP Address harus diatur secara manual di pengaturan router
+via web. 
 
 Setting Wifi
 *******************************************************************************************
@@ -105,8 +120,6 @@ Ketika boot, informasi tersebut akan dikopikan ke lokasi yang tepat di Linux
 root file system sehingga wifi bisa dijalankan. Kode negara berdasarkan ISO
 3166-1 bisa ditemukan di `wikipedia ISO 3166-1`_
 
-
-
 .. _wikipedia ISO 3166-1: https://en.wikipedia.org/wiki/ISO_3166-1
 .. _configuration/wireless/headless: https://www.raspberrypi.org/documentation/configuration/wireless/headless.md
 
@@ -122,9 +135,6 @@ Secara default, username dan passwordnya adalah:
         password: raspberry
 
 Password tersebut bisa diganti dengan *command*: ``passwd``
-
-Instruksinya bisa ditemukan di website raspberrypi bagian `linux/usage/users`_
-
 
 Ganti Hostname
 *******************************************************************************************
@@ -169,19 +179,6 @@ Cloning SD Card bisa dilakukan menggunakan ``Win32 Disk Imager``.
 Remote Desktop
 *******************************************************************************************
 
-- Carilah IP Address dari Raspberrypi dengan melihat daftar ip address yang terhubung ke jaringan network yang sama
-
-::
-
-     arp -a
-
-Koneksi via ssh dengan cara:
-
-:: 
-        
-        ssh pi@ipaddress
-
-
 - Install VNC Server
 
 :: 
@@ -203,8 +200,6 @@ Download software dari website `realvnc.com`_. Buka aplikasinya kemudian ketikka
 kolom yang tersedia di software tersebut.
 
 
-.. _website raspberrypi: https://www.raspberrypi.org/documentation/
-.. _linux/usage/users: https://www.raspberrypi.org/documentation/linux/usage/users.md#:~:text=Change%20your%20password&text=Enter%20passwd%20on%20the%20command,displayed%20while%20entering%20your%20password.
 .. _rename hostname: https://thepihut.com/blogs/raspberry-pi-tutorials/19668676-renaming-your-raspberry-pi-the-hostname
 .. _spin.atomicobject.com: https://spin.atomicobject.com/2019/06/09/raspberry-pi-laptop-display/
 .. _realvnc.com: https://www.realvnc.com/en/connect/download/viewer/
@@ -1007,3 +1002,5 @@ Boot dari USB
 .. _`how to use your Raspberry Pi as a DNS server`: https://raspberrytips.com/raspberry-pi-dns-server/
 .. _`deviceplus: raspberry pi as a DNS server`: https://www.deviceplus.com/raspberry-pi/how-to-use-a-raspberry-pi-as-a-dns-server/
 .. _`pimylifeup: raspberry pi a DNS server`: https://pimylifeup.com/raspberry-pi-dns-server/
+.. _`website raspberrypi`: https://www.raspberrypi.org/software/
+
