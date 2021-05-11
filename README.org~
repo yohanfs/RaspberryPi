@@ -1,0 +1,1088 @@
+* Raspberry Pi
+  :PROPERTIES:
+  :CUSTOM_ID: raspberry-pi
+  :END:
+
+Daftar Isi
+
+Raspberry Pi adalah sebuah board komputer mini. Raspberry Pi bisa
+berfungsi sebagai desktop komputer pada umumnya.
+
+Panduan untuk mulai menggunakan raspberrypi terdapat di
+[[https://www.raspberrypi.org/software/][website raspberrypi]]. Di
+website tersebut terdapat informasi perihal kelengkapan perangkat,
+install sistem operasi, dan pengaturan lainnya.
+
+** Getting Started
+   :PROPERTIES:
+   :CUSTOM_ID: getting-started
+   :END:
+
+*** Install OS
+    :PROPERTIES:
+    :CUSTOM_ID: install-os
+    :END:
+
+/Operating system/ (OS) diinstall dengan cara melakukan flash sebuah
+image (OS) pada sebuah microSD. Flash tersebut dilakukan menggunakan
+sebuah /software/ yang diinstall di komputer (laptop/desktop). Ada
+banyak /software/ yang tersedia untuk melakukan flash, misalnya
+*Raspberry Pi Imager* dan *BalenaEtcher*.
+
+Official OS untuk Raspberry Pi adalah *Raspberry Pi OS*. Tetapi, ada
+juga OS dari /third parties/, misalnya Ubuntu.
+
+Setelah selesai flash, kemudian microSD dimasukkan ke /port/ di
+Raspberry Pi. Selain itu, diperlukan keyboard, mouse, dan monitor untuk
+melakukan pengaturan selanjutnya.
+
+Apabila tidak tersedia keyboard, mouse, dan monitor, maka pengaturan
+bisa dilakukan secara /headless/. Ini dilakukan dengan cara mengatur
+Raspberry Pi via /client computer/. Protokol yang digunakan adalah SSH
+dan VNC. Namun, SSH dan VNC secara default berada dalam kondisi disable.
+Oleh karena itu, perlu di-enable kan untuk penggunaan pertama kalinya.
+
+Kapasitas microSD yang diperlukan sekitas 4 GB. Apabila flash dilakukan
+ke microSD yang kapasitasnya besar, maka sisa kapasitas tidak dapat akan
+digunakan dikarenakan menjadi /unallocated storage/. Supaya dapat
+digunakan, gunakanlah gpated (linux) untuk memperbesar /storage/
+tersebut.
+
+*** Enable SSH
+    :PROPERTIES:
+    :CUSTOM_ID: enable-ssh
+    :END:
+
+Secara default, ssh dalam kondisi disable. SSH perlu diaktifkan dengan
+cara membuat file ssh sebagai berikut:
+
+#+BEGIN_EXAMPLE
+    $ touch /media/user/boot/ssh
+#+END_EXAMPLE
+
+Selanjutnya, koneksi bisa dijalankan dengan cara:
+
+#+BEGIN_EXAMPLE
+    $ ssh pi@ip-address
+#+END_EXAMPLE
+
+*** Enable VNC
+    :PROPERTIES:
+    :CUSTOM_ID: enable-vnc
+    :END:
+
+Caranya adalah:
+
+#+BEGIN_EXAMPLE
+    $ sudo raspi-config
+#+END_EXAMPLE
+
+Kemudian, pilih interface options > VNC.
+
+Selanjutnya masukkanlah IP Address di VNC viewer yang terinstall di
+/client computer/. Apabila ada /issue/ dengan /warning/ berikut ini,
+jalankanlah:
+
+#+BEGIN_EXAMPLE
+    cannot currently show the desktop
+#+END_EXAMPLE
+
+- =sudo raspi-config=
+- pilih *Display Options*.
+- kemudian pilih salah satu resolusi yang ada di pilihan.
+
+*** IP Address
+    :PROPERTIES:
+    :CUSTOM_ID: ip-address
+    :END:
+
+IP Address akan di-assign oleh router melalui DHCP. Oleh karenanya, IP
+Address dapat diketahui dengan cara login ke pengaturan router via web.
+
+Cara lainnya adalah dengan menjalankan:
+
+#+BEGIN_EXAMPLE
+    arp -a
+#+END_EXAMPLE
+
+IP Address yang dialokasikan oleh DHCP bisa berubah secara dinamis. Agar
+tidak berubah, reservasi IP Address harus diatur secara manual di
+pengaturan router via web.
+
+*** Setting Wifi
+    :PROPERTIES:
+    :CUSTOM_ID: setting-wifi
+    :END:
+
+Wifi di Raspberrypi dapat diatur walaupun tidak melalui keyboard dan
+monitor secara langsung. Langkah-langkahnya terdapat di website
+rapsberrypi pada bagian
+[[https://www.raspberrypi.org/documentation/configuration/wireless/headless.md][configuration/wireless/headless]],
+yaitu:
+
+- Pastikan OS telah terinstall di SD Card
+- Buatlah file =wpa_applicant.conf= dan simpan di boot folder. Contoh
+  isi file tersebut:
+
+#+BEGIN_EXAMPLE
+    ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
+    update_config=1
+    country=<Insert 2 letter ISO 3166-1 country code here>
+
+    network={
+     ssid="<Name of your wireless LAN>"
+     psk="<Password for your wireless LAN>"
+    }
+#+END_EXAMPLE
+
+Ketika boot, informasi tersebut akan dikopikan ke lokasi yang tepat di
+Linux root file system sehingga wifi bisa dijalankan. Kode negara
+berdasarkan ISO 3166-1 bisa ditemukan di
+[[https://en.wikipedia.org/wiki/ISO_3166-1][wikipedia ISO 3166-1]]
+
+*** Ganti Password
+    :PROPERTIES:
+    :CUSTOM_ID: ganti-password
+    :END:
+
+Secara default, username dan passwordnya adalah:
+
+#+BEGIN_EXAMPLE
+    username: pi
+    password: raspberry
+#+END_EXAMPLE
+
+Password tersebut bisa diganti dengan /command/: =passwd=
+
+*** Ganti Hostname
+    :PROPERTIES:
+    :CUSTOM_ID: ganti-hostname
+    :END:
+
+Default hostname-nya adalah =pi@raspberrypi=. Hostname tersebut bisa
+diganti dengan cara:
+
+#+BEGIN_EXAMPLE
+    sudo vim /etc/hostname
+#+END_EXAMPLE
+
+File di atas hanya terdiri dari satu line, yaitu nama host. Gantilah
+nama tersebut sesuai dengan yang diinginkan.
+
+Ada sebuah file yang berkaitan dengan hostname ini, tetapi hanya
+berhubungan dengan software. Cara editnya adalah:
+
+#+BEGIN_EXAMPLE
+    sudo vim /etc/hosts
+#+END_EXAMPLE
+
+Carilah line yang diawali dengan =127.0.0.1=. Kemudian gantilah
+hostname-nya.
+
+*** Resize SD Card
+    :PROPERTIES:
+    :CUSTOM_ID: resize-sd-card
+    :END:
+
+Setelah sebuah SD card telah di-flash, maka akan terbuatlah 2 partisi
+yaitu boot dan roots. Secara default, besar partisi tersebut telah
+ditentukan. Jadi apabila memakai SD card yang berkapasitas besar, maka
+sisa /storage/ nya tidak akan terpakai (/unallocated/). Untuk
+memaksimalkan kapasitas SD card, maka partisi =roots= bisa diperbesar
+dengan software =gparted=. Resize SD card ini dilakukan di komputer
+terlebih dahulu. Barulah setelah itu dimasukkan kembali ke Raspberry Pi.
+
+*Referensi*
+
+- [[https://elinux.org/RPi_Resize_Flash_Partitions][Resize SD Card]]
+
+*** Cloning SD Card
+    :PROPERTIES:
+    :CUSTOM_ID: cloning-sd-card
+    :END:
+
+Cloning SD Card bisa dilakukan menggunakan =Win32 Disk Imager=.
+
+*** Remote Desktop
+    :PROPERTIES:
+    :CUSTOM_ID: remote-desktop
+    :END:
+
+- Install VNC Server
+
+#+BEGIN_EXAMPLE
+    sudo apt-get update
+    sudo apt-get install realvnc-vnc-server realvnc-vnc-viewer
+#+END_EXAMPLE
+
+Setelah install VNC server, lakukan berikut ini:
+
+#+BEGIN_EXAMPLE
+    sudo raspi-config
+#+END_EXAMPLE
+
+Navigasikan ke =interfacing options=, =P3 VNC=, dan pilih =Yes=.
+
+- Install VNC viewer di laptop
+
+Download software dari website
+[[https://www.realvnc.com/en/connect/download/viewer/][realvnc.com]].
+Buka aplikasinya kemudian ketikkan ipaddress pada kolom yang tersedia di
+software tersebut.
+
+*** Secure Copy (SCP)
+    :PROPERTIES:
+    :CUSTOM_ID: secure-copy-scp
+    :END:
+
+Kopi data antar 2 komputer bisa menggunakan =secure copy= (SCP).
+Tutorialnya ada di website Raspberrypi bagian
+[[https://www.raspberrypi.org/documentation/remote-access/ssh/scp.md][remote-access/ssh/scp]].
+
+*Command Kopi File*
+
+#+BEGIN_EXAMPLE
+    scp filename user@hostname:"complete path"
+#+END_EXAMPLE
+
+Misalnya:
+
+#+BEGIN_EXAMPLE
+    scp filename.txt pi@192.168.2.100:"/mnt/data"
+#+END_EXAMPLE
+
+*Command Kopi Folder*
+
+#+BEGIN_EXAMPLE
+    scp -rp folder user@hostname:"complete path"
+#+END_EXAMPLE
+
+*Kopi Multiple Files*
+
+#+BEGIN_EXAMPLE
+    scp myfile.txt myfile2.txt pi@192.168.1.3:
+#+END_EXAMPLE
+
+Alternatifnya menggunakan sebuah /wildcard/ untuk mengkopi semua file
+dengan ekstensi tertentu
+
+#+BEGIN_EXAMPLE
+    scp *txt pi@192.168.1.3:
+#+END_EXAMPLE
+
+*Note*
+
+Jika /complete path/ tidak diberikan, maka file akan tersimpan di:
+
+#+BEGIN_EXAMPLE
+    /home/user/
+#+END_EXAMPLE
+
+*** Resolusi Monitor
+    :PROPERTIES:
+    :CUSTOM_ID: resolusi-monitor
+    :END:
+
+Untuk ukuran monitor Philips pilih resolusi 1680x1050 60 Hz (16:10).
+
+Caranya adalah ketik sudo raspi-config di terminal kemudian
+
+- navigasi ke Advanced Options
+- navigasi ke A5 Resolution
+- pilih DMT Mode 58 1680x1050 60 Hz (16:10)
+
+*** Setting Static IP Address
+    :PROPERTIES:
+    :CUSTOM_ID: setting-static-ip-address
+    :END:
+
+Buka file berikut:
+
+#+BEGIN_EXAMPLE
+    sudo vim /etc/dhcpcd.conf
+#+END_EXAMPLE
+
+Tambahkan line berikut:
+
+#+BEGIN_EXAMPLE
+    interface eth0
+    static ip_address = 192.168.0.X
+    static routers = 192.168.0.1
+    static domain_name_servers=
+#+END_EXAMPLE
+
+Line tersebut sebenarnya berupa template yang sudah tersedia di file
+=dhcpcd.conf= dalam bentuk /comment/.
+
+Selanjutnya bisa digunakan untuk komunikasi via metode berikut:
+
+- SSH
+
+#+BEGIN_EXAMPLE
+    ssh username@ipaddress
+#+END_EXAMPLE
+
+- Samba
+
+#+BEGIN_EXAMPLE
+    smb://ipaddress
+#+END_EXAMPLE
+
+Note:
+
+- Mengaktifkan LAN, maka wifi menjadi tidak jalan
+- Solusi: pastikan =wpa_supplicant= telah disetting sebagai berikut:
+
+#+BEGIN_EXAMPLE
+    sudo vim /etc/wpa_supplicant/wpa_supplicant.conf
+#+END_EXAMPLE
+
+Isi dengan konten berikut:
+
+#+BEGIN_EXAMPLE
+    network={
+       ssid="NETWORKNAME"
+       psk="PASSWORD"
+       scan_ssid=1
+       proto=RSN
+       key_mgmt=WPA-PSK
+       pairwise=CCMP TKIP
+       group=CCMP TKIP
+       id_str="home"
+       priority=5
+    }
+#+END_EXAMPLE
+
+- Atur file =interfaces=
+
+#+BEGIN_EXAMPLE
+    #backup
+    sudo vim /etc/network/interfaces /etc/network/interfaces_BKP
+    #edit file
+    sudo vim /etc/network/interfaces
+#+END_EXAMPLE
+
+Isi dengan konten berikut:
+
+#+BEGIN_EXAMPLE
+    auto lo
+    iface lo inet loopback
+
+    auto eth0
+    allow-hotplug eth0
+    iface eth0 inet static
+    address 192.168.0.X
+    netmask 255.255.255.0
+
+    auto wlan0
+    allow-hotplug wlan0
+    iface wlan0 inet static
+    wpa-conf /etc/wpa_supplicant/wpa_supplicant.conf
+    address 192.168.2.X
+    netmask 255.255.255.0
+    brodcast 192.168.2.255
+    gateway 192.168.2.1
+
+    iface default inet dhcp
+#+END_EXAMPLE
+
+- Tes koneksi
+
+via LAN : ssh [[mailto:pi@192.168.0.X][pi@192.168.0.X]]
+
+via Wifi: ssh [[mailto:pi@192.168.2.X][pi@192.168.2.X]]
+
+*Referensi*
+
+- [[http://www.knight-of-pi.org/de/paralleler-ethernet-und-wifi-zugriff-fuer-den-raspberry-pi-3/][parallel
+  LAN and Wifi]]
+- [[https://raspberrypi.stackexchange.com/questions/8851/setting-up-wifi-and-ethernet][setting
+  LAN and Wifi]]
+
+*** Mounting USB Drive
+    :PROPERTIES:
+    :CUSTOM_ID: mounting-usb-drive
+    :END:
+
+*Kumpulkan Informasi Disk*
+
+- Cari informasi mengenai disk, misalnya nama =device=, =size=, dan
+  =type=
+
+#+BEGIN_EXAMPLE
+    sudo fdisk -l
+#+END_EXAMPLE
+
+- UUID
+
+UUID adalah ID untuk sebuah disk.
+
+#+BEGIN_EXAMPLE
+    sudo ls -l /dev/disk/by-uuid/
+#+END_EXAMPLE
+
+*Mount USB drive secara otomatis*
+
+- Buat folder untuk /mount point/. Misalnya /mnt/usb
+- Buka file =/etc/fstab=
+- Tambahkan line berikut di akhir line
+
+#+BEGIN_EXAMPLE
+    UUID=2014-3D52(contoh)  /mnt/usb        vfat    uid=pi,gid=pi   0       0
+#+END_EXAMPLE
+
+Ganti UUID dengan UUID drive yang digunakan.
+
+- Save dan exit
+- Reboot atau coba dengan /command/ berikut:
+
+#+BEGIN_EXAMPLE
+    sudo mount -a
+#+END_EXAMPLE
+
+Note:
+
+Jika format storage-nya adalah ntfs, maka install:
+
+#+BEGIN_EXAMPLE
+    $ sudo apt-get update
+    $ sudo apt install ntfs-3g
+#+END_EXAMPLE
+
+*Referensi*
+
+- [[https://raspberrytips.com/mount-usb-drive-raspberry-pi/][Mount a usb
+  drive]]
+
+*** CHMOD: File Permission
+    :PROPERTIES:
+    :CUSTOM_ID: chmod-file-permission
+    :END:
+
+- [[https://www.howtogeek.com/437958/how-to-use-the-chmod-command-on-linux/][howtogeek.com:
+  chmod on linux]]
+
+** Softwares
+   :PROPERTIES:
+   :CUSTOM_ID: softwares
+   :END:
+
+- Vim
+- Git
+
+** Web Server (Apache2)
+   :PROPERTIES:
+   :CUSTOM_ID: web-server-apache2
+   :END:
+
+Berikut ini adalah tutorial untuk serve HTML files melalui HTTP
+menggunakan Apache2.
+
+*** Install Apache2
+    :PROPERTIES:
+    :CUSTOM_ID: install-apache2
+    :END:
+
+Tutorialnya berikut ini didapat dari website Raspberrypi bagian
+[[https://www.raspberrypi.org/documentation/remote-access/web-server/apache.md][remote-access/web-server/apache]].
+
+Sebelum install, update package terlebih dahulu:
+
+#+BEGIN_EXAMPLE
+    sudo apt update
+#+END_EXAMPLE
+
+Kemudian install =apache2=:
+
+#+BEGIN_EXAMPLE
+    sudo apt install apache2 -y
+#+END_EXAMPLE
+
+Untuk cek versi apache2:
+
+#+BEGIN_EXAMPLE
+    sudo apache2 -v
+#+END_EXAMPLE
+
+Setelah instalasi, maka akan dibuatkan folder dengan path berikut:
+
+#+BEGIN_EXAMPLE
+    var/www/html
+#+END_EXAMPLE
+
+*** Test Web Server
+    :PROPERTIES:
+    :CUSTOM_ID: test-web-server
+    :END:
+
+Secara default, di folder =var/www/html= terdapat sebuah file
+=index.html=. File tersebut bisa digunakan untuk test apakah web server
+berhasil diinstall.
+
+Untuk mengetesnya, bukalah =http://IP-Address=, contohnya
+=http://192.168.1.10=.
+
+*** Serve Static Web
+    :PROPERTIES:
+    :CUSTOM_ID: serve-static-web
+    :END:
+
+Simpanlah file html anda di folder =var/www/html=. Bukalah alamat web
+tersebut di browser.
+
+*** Ganti Document Root
+    :PROPERTIES:
+    :CUSTOM_ID: ganti-document-root
+    :END:
+
+Ini bertujuan agar data yang disimpan di usb drive dapat disajikan
+melalui web server.
+
+Sebelum mengganti =document root=, /external storage/ harus dimounting
+terlebih dahulu. Caranya ada website raspberrypi bagian
+[[https://www.raspberrypi.org/documentation/configuration/external-storage.md][configuration/external-storage]].
+
+Secara default, Raspberry Pi akan memunculkan data usb di
+=/media/pi/<storage-label>=. Agar device tersebut selalu muncul di
+lokasi tertentu, maka harus diset secara manual.
+
+Caranya:
+
+- plug usb drive ke Raspberry Pi
+- identifikasi nama sistem file. Contoh yang didapatkan adalah nama
+  filesystem, misalnya =/dev/sda1=
+
+#+BEGIN_EXAMPLE
+    df -h
+#+END_EXAMPLE
+
+- Dapatkan UUID dan Type dari nama filesystem =/dev/sda1=
+
+#+BEGIN_EXAMPLE
+    sudo blkid /dev/sda1
+#+END_EXAMPLE
+
+Contoh hasil dari /command/ di atas:
+
+#+BEGIN_EXAMPLE
+    /dev/sda1: LABEL="myusb" UUID="xxxx-xxxx" TYPE="vfat"
+#+END_EXAMPLE
+
+Jika storagenya menggunakan sistem file exFAT, maka install exFAT
+driver:
+
+#+BEGIN_EXAMPLE
+    sudo apt update
+    sudo apt install exfat-fuse
+#+END_EXAMPLE
+
+Jika storagenya menggunakan sistem file NTFS, maka install ntfs-3g
+driver:
+
+#+BEGIN_EXAMPLE
+    sudo apt update
+    sudo apt install ntfs-3g
+#+END_EXAMPLE
+
+- Buatlah target folder, misal nama foldernya adalah myusb
+
+#+BEGIN_EXAMPLE
+    sudo mkdir /mnt/myusb
+#+END_EXAMPLE
+
+- Mount storage
+
+#+BEGIN_EXAMPLE
+    sudo mount /dev/sda1 /mnt/myusb
+#+END_EXAMPLE
+
+- Cek keberhasilan mount storage
+
+#+BEGIN_EXAMPLE
+    ls /mnt/myusb
+#+END_EXAMPLE
+
+- jadikan user (misalnya =pi=) menjadi pemilik folder
+
+#+BEGIN_EXAMPLE
+    sudo chown -R pi:pi /mnt/myusb
+#+END_EXAMPLE
+
+- Editlah file =fstab=
+
+#+BEGIN_EXAMPLE
+    sudo vim /etc/fstab
+#+END_EXAMPLE
+
+Tambahkan line berikut dengan UUID dan Type yang telah didapatkan
+sebelumnya.
+
+#+BEGIN_EXAMPLE
+    UUID=[UUID] /mnt/myusb [TYPE] gid=1000,uid=1000,dmask=027,umask=022 0 1
+#+END_EXAMPLE
+
+- Restart untuk mengetahui hasil perubahan ini
+
+#+BEGIN_EXAMPLE
+    sudo reboot
+#+END_EXAMPLE
+
+Setelah melakukan hal di atas barulah ganti =document root=. File yang
+perlu diedit adalah:
+
+#+BEGIN_EXAMPLE
+    $ sudo vim /etc/apache2/sites-available/000-default.conf
+#+END_EXAMPLE
+
+Tutorialnya ada di website
+[[https://www.digitalocean.com/community/tutorials/how-to-move-an-apache-web-root-to-a-new-location-on-ubuntu-16-04][digitalocean-change-web-root]].
+
+*** Multiple Web
+    :PROPERTIES:
+    :CUSTOM_ID: multiple-web
+    :END:
+
+Berikut ini tutorial untuk menjalankan dua buah website secara lokal.
+Struktur folder html yang saya gunakan adalah:
+
+#+BEGIN_EXAMPLE
+    | /mnt/ysi
+    | ├── www
+    | │   ├── cs
+    | │   └── phd
+#+END_EXAMPLE
+
+Folder ysi adalah /storage/ dari usb drive yang telah dimounting. Folder
+=cs= dan =phd= adalah folder-folder yang berisi static html.
+
+Sementara struktur folder dari apache2 adalah:
+
+#+BEGIN_EXAMPLE
+    | /etc/apache2/
+    | ├── conf-available
+    | ├── conf-enabled
+    | ├── mods-available
+    | ├── mods-enabled
+    | ├── sites-available          
+    | │   ├── 000-default.conf
+    | │   ├── default-ssl.conf
+    | │   ├── cs.conf
+    | │   └── phd.conf
+    | ├── sites-enabled          
+    | │   ├── cs.conf
+    | │   └── phd.conf
+    | ├── envvars
+    | ├── magic
+    | ├── ports.conf
+    | └── apache2.conf
+#+END_EXAMPLE
+
+Isi file =cs.conf=:
+
+#+BEGIN_EXAMPLE
+    <VirtualHost *:81>
+            ServerName cs
+            ServerAlias www.cs.com
+            DocumentRoot /mnt/ysi/www/cs
+            ErrorLog ${APACHE_LOG_DIR}/cs_error.log
+            CustomLog ${APACHE_LOG_FIR}/cs_access.log combined
+    </VirtualHost>
+#+END_EXAMPLE
+
+Isi file =phd.conf=:
+
+#+BEGIN_EXAMPLE
+    <VirtualHost *:80>
+            ServerName phd
+            ServerAlias www.phd.com
+            DocumentRoot /mnt/ysi/www/phd
+            ErrorLog ${APACHE_LOG_DIR}/phd_error.log
+            CustomLog ${APACHE_LOG_FIR}/phd_access.log combined
+    </VirtualHost>
+#+END_EXAMPLE
+
+Sebelum bisa digunakan, =cs.conf= dan =phd.conf= harus diaktifkan:
+
+#+BEGIN_EXAMPLE
+    $ sudo a2ensite cs.conf
+#+END_EXAMPLE
+
+#+BEGIN_EXAMPLE
+    $ sudo a2ensite phd.conf
+#+END_EXAMPLE
+
+Untuk menonaktifkan:
+
+#+BEGIN_EXAMPLE
+    $ sudo a2dissite cs.conf
+#+END_EXAMPLE
+
+Pengaturan ports dilakukan di:
+
+#+BEGIN_EXAMPLE
+    $ sudo vim /etc/apache2/ports.conf
+#+END_EXAMPLE
+
+Isi file =ports.conf=:
+
+#+BEGIN_EXAMPLE
+    Listen 80
+    Listen 81
+#+END_EXAMPLE
+
+Kemudian restart apache:
+
+#+BEGIN_EXAMPLE
+    $ sudo systemctl restart apache2
+#+END_EXAMPLE
+
+Untuk mengakses website, bukalah browser kemudian ketikkan address
+berikut:
+
+#+BEGIN_EXAMPLE
+    192.168.x.xxx:80
+    192.168.x.xxx:81
+#+END_EXAMPLE
+
+*Referensi*
+
+- [[https://www.digitalocean.com/community/tutorials/how-to-set-up-apache-virtual-hosts-on-ubuntu-18-04][digitalocean-setup-virtual-hosts]].
+- [[https://pimylifeup.com/raspberry-pi-apache/][pimylifeup-setup-apache-web-server]]
+
+** Web Server (Nginx - Docker)
+   :PROPERTIES:
+   :CUSTOM_ID: web-server-nginx---docker
+   :END:
+
+Berikut ini adalah cara menjalankan Nginx menggunakan docker.
+
+Struktur foldernya adalah sebagai berikut:
+
+#+BEGIN_EXAMPLE
+    web
+    ├── conf          
+    │   └── default.conf
+    ├── html         
+    └── docker-compose.yml
+#+END_EXAMPLE
+
+Isi default.conf:
+
+#+BEGIN_EXAMPLE
+    server {
+        location / {
+           root /var/www/html;
+           try_files $uri $uri/index.html $uri.html =404;
+        }
+      }
+#+END_EXAMPLE
+
+Isi docker-compose.yml:
+
+#+BEGIN_EXAMPLE
+    version: '3.1'
+
+    services:
+       web:
+         image: nginx
+         container_name: w3
+         ports:
+           - 80:80
+         restart: always
+         volumes:
+           - ./html:/var/www/html
+           - ./conf/default.conf:/etc/nginx/conf.d/default.conf
+#+END_EXAMPLE
+
+Kemudian jalankan:
+
+#+BEGIN_EXAMPLE
+    $ docker-compose up -d
+#+END_EXAMPLE
+
+** File Sharing (Samba)
+   :PROPERTIES:
+   :CUSTOM_ID: file-sharing-samba
+   :END:
+
+Samba memungkinkan pertukaran data antara linux dengan windows melalui
+network dalam bentuk =shared folder=. Berikut ini adalah cara-cara untuk
+menyetting samba:
+
+- terlebih dahulu update package
+
+#+BEGIN_EXAMPLE
+    sudo apt-get update
+    sudo apt-get upgrade
+#+END_EXAMPLE
+
+- install samba
+
+#+BEGIN_EXAMPLE
+    sudo apt-get install samba samba-common-bin
+#+END_EXAMPLE
+
+- sebelum dishare melalui network, buatlah terlebih dahulu folder yang
+  akan dishare. Misalnya sebuah folder yang bernama =shared=.
+
+#+BEGIN_EXAMPLE
+    mkdir /home/pi/shared
+#+END_EXAMPLE
+
+- aturlah konfigurasi samba dengan membuka file =smb.conf= berikut:
+
+#+BEGIN_EXAMPLE
+    sudo vim /etc/samba/smb.conf
+#+END_EXAMPLE
+
+tambahkan /script/ berikut pada bagian akhir file =smb.conf=:
+
+#+BEGIN_EXAMPLE
+    [shared]
+    path = /home/pi/shared
+    writeable = Yes
+    create mask = 0777
+    directory mask = 0777
+    public = no
+#+END_EXAMPLE
+
+- setup user for samba. Sebagai contoh user "pi" dengan password
+  "raspberry"
+
+#+BEGIN_EXAMPLE
+    sudo smbpasswd -a pi
+#+END_EXAMPLE
+
+- restart samba service
+
+#+BEGIN_EXAMPLE
+    sudo systemctl restart smbd
+#+END_EXAMPLE
+
+*Referensi*
+
+- [[https://pimylifeup.com/raspberry-pi-samba/][How to setup a raspberry
+  pi samba server]]
+
+** Wireless Printer
+   :PROPERTIES:
+   :CUSTOM_ID: wireless-printer
+   :END:
+
+Berikut ini adalah langkah-langkah untuk menjadikan usb printer menjadi
+wireless printer. Konsep dasarnya adalah dengan cara menghubungkan usb
+printer ke raspberryPi. Kemudian raspberryPi melakukan sharing ke
+network.
+
+- Install *Common Unix Printing System (CUPS)*
+
+#+BEGIN_EXAMPLE
+    sudo apt-get install cups
+#+END_EXAMPLE
+
+- Masukkan user ke usergroup. Usergroup yang dibuat oleh CUPS adalah
+  *lpadmin* dan default user untuk raspberrypi adalah *pi*
+
+#+BEGIN_EXAMPLE
+    sudo usermod -a -G lpadmin pi
+#+END_EXAMPLE
+
+- Bukalah localhost:631 di browser dan lakukan konfigurasi
+
+*Referensi*
+
+- [[https://www.howtogeek.com/169679/how-to-add-a-printer-to-your-raspberry-pi-or-other-linux-computer/][Add
+  a printer to a raspberry]]
+
+** DNS Server
+   :PROPERTIES:
+   :CUSTOM_ID: dns-server
+   :END:
+
+DNS adalah singkatan dari /Domain Name System/. DNS berguna untuk
+menterjemahkan nama domain ke /IP addresses/. Dalam sebuah jaringan,
+/devices/ hanya berkomunikasi menggunakan /IP addresses/ dan membutuhkan
+DNS server untuk mengkonversi /host name/ ke IP. Untuk keperluan
+tertentu, misalnya menambahkan /custom/ domain untuk /home networking/,
+dns server bisa diinstall di Raspberry Pi.
+
+*Install dnsmasq di Raspberry Pi*
+
+#+BEGIN_EXAMPLE
+    $ sudo apt-get update
+    $ sudo apt install dnsmasq
+#+END_EXAMPLE
+
+*Konfigurasi DNS*
+
+- Buka
+
+#+BEGIN_EXAMPLE
+    $ sudo vim /etc/dnsmasq.conf
+#+END_EXAMPLE
+
+- Comment out atau tambahkan code berikut
+
+#+BEGIN_EXAMPLE
+    domain-needed
+    bogus-priv
+    expand-hosts
+    no-resolv
+    server=8.8.8.8
+    server=8.8.4.4
+
+    #custom domain
+    address=/contoh.ysi/192.168.2.113
+
+    expand-hosts
+    cache-size=1000
+
+    dchp-mac=....
+    dchp-reply-delay=....
+#+END_EXAMPLE
+
+- Exit dan restart dnsmasq
+
+#+BEGIN_EXAMPLE
+    $ sudo service dnsmasq restart
+#+END_EXAMPLE
+
+*Tes*
+
+Tes dijalankan di komputer lain yang terhubung ke network.
+
+- buka command line
+- start nslookup
+
+#+BEGIN_EXAMPLE
+    $ nslookup
+#+END_EXAMPLE
+
+- secara default nslookup menggunakan DNS saat ini, untuk menggantinya
+  bisa mengetikkan
+
+#+BEGIN_EXAMPLE
+    $ server A.B.C.C
+#+END_EXAMPLE
+
+Ganti A.B.C.D dengan IP Address.
+
+Kemudian ketikkan *contoh.ysi*.
+
+*Komputer Klien*
+
+Aturlah DNS di komputer//mobile phone/ yang terhubung ke network agar
+bisa menggunakan nama domain yang terdapat pada dns server (Raspberry Pi
+pada kasus ini).
+
+*Referensi*
+
+- [[https://raspberrytips.com/raspberry-pi-dns-server/][how to use your
+  Raspberry Pi as a DNS server]]
+- [[https://www.deviceplus.com/raspberry-pi/how-to-use-a-raspberry-pi-as-a-dns-server/][deviceplus:
+  raspberry pi as a DNS server]]
+- [[https://pimylifeup.com/raspberry-pi-dns-server/][pimylifeup:
+  raspberry pi a DNS server]]
+
+** Local Hostname
+   :PROPERTIES:
+   :CUSTOM_ID: local-hostname
+   :END:
+
+- Buka file
+
+#+BEGIN_EXAMPLE
+    $ sudo vim /etc/hosts
+#+END_EXAMPLE
+
+- Tambahkan IP Address dan nama domain
+
+#+BEGIN_EXAMPLE
+    192.168.1.17    contoh.ysi
+#+END_EXAMPLE
+
+** VPN
+   :PROPERTIES:
+   :CUSTOM_ID: vpn
+   :END:
+
+VPN berguna agar home networking bisa diakses dari luar jaringan.
+
+*Install PiVPN di Rpi*
+
+- Buka terminal
+- Jalankan:
+
+#+BEGIN_EXAMPLE
+    curl -L https://install.pivpn.io | bash
+#+END_EXAMPLE
+
+- Ikuti instruksi install. Gunakan konfigurasi berikut:
+
+  #+BEGIN_QUOTE
+
+    - PiVPN automated installer [Ok]
+    - Static IP needed [Ok]
+    - DHCP reservation [Yes]
+    - Local users [Ok]
+    - Choose a user [pi]
+    - Installation mode [WireGuard]
+    - Installation packages
+    - Wireguard port [default 51820] > bisa pakai port yang lain
+    - Confirm custom port number [Yes]
+    - DNS provider [Google]
+    - Public IP or DNS [Use this public IP]
+    - Server information
+    - Unattended upgrades
+    - - Installation complete! :: 
+
+        - create profile: $ pivpn add
+        - show qr code: $ pivpn -qr
+        - config file disimpan di ~/configs
+
+    - - Setting port-mapping di router :: 
+
+        - pilih udp protocol
+
+    - - Install WireGuard Client :: 
+
+        - Iphone > scan qr code
+        - MacOS dan Windows > install app kemudian import config file
+        - Ubuntu > belum berhasil
+
+  #+END_QUOTE
+
+*Referensi*
+
+- [[https://www.pivpn.io/][Install PiVPN]]
+- [[https://www.youtube.com/watch?v=zsN47t2r_WU][Youtube: Install
+  PiVPN]]
+
+** Boot dari USB
+   :PROPERTIES:
+   :CUSTOM_ID: boot-dari-usb
+   :END:
+
+- Jalankan Rpi dengan sd card
+- - Update dan upgrade :: 
+
+    - sudo apt update
+    - sudo apt full-upgrade
+
+- - Ganti boot order :: 
+
+    - sudo raspi-config > advanced options > A6 boot order > usb boot >
+      reboot
+
+- Clone sd card ke usb storage (flashdrive/ssd)
+
+** List USB
+   :PROPERTIES:
+   :CUSTOM_ID: list-usb
+   :END:
+
+Untuk menampilkan daftar usb devices yang terkoneksi ke Rpi.
+
+#+BEGIN_EXAMPLE
+    $ lsusb
+#+END_EXAMPLE

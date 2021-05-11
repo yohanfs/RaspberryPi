@@ -1,2 +1,0 @@
-view:
-	restview README.rst
