@@ -1,7 +1,5 @@
 #+STARTUP: overview
 
-* Raspberry Pi
-
 Raspberry Pi adalah sebuah board komputer mini. Raspberry Pi bisa
 berfungsi sebagai desktop komputer pada umumnya.
 
@@ -9,8 +7,8 @@ Panduan untuk mulai menggunakan raspberrypi terdapat di [[https://www.raspberryp
 raspberrypi]]. Di website tersebut terdapat informasi perihal
 kelengkapan perangkat, install sistem operasi, dan pengaturan lainnya.
 
-** Getting Started
-*** Install OS
+* Getting Started
+** Install OS
 
 /Operating system/ (OS) diinstall dengan cara melakukan flash sebuah
 image (OS) pada sebuah microSD. Flash tersebut dilakukan menggunakan
@@ -37,7 +35,7 @@ digunakan dikarenakan menjadi /unallocated storage/. Supaya dapat
 digunakan, gunakanlah gpated (linux) untuk memperbesar /storage/
 tersebut.
 
-*** Enable SSH
+** Enable SSH
 
 Secara default, ssh dalam kondisi disable. SSH perlu diaktifkan dengan
 cara membuat file ssh sebagai berikut:
@@ -48,7 +46,7 @@ Selanjutnya, koneksi bisa dijalankan dengan cara:
 
 :    $ ssh pi@ip-address
 
-*** Enable VNC
+** Enable VNC
 
 Caranya adalah:
 
@@ -66,7 +64,7 @@ jalankanlah:
 - pilih *Display Options*.
 - kemudian pilih salah satu resolusi yang ada di pilihan.
 
-*** IP Address
+** IP Address
 
 IP Address akan di-assign oleh router melalui DHCP. Oleh karenanya, IP
 Address dapat diketahui dengan cara login ke pengaturan router via web.
@@ -79,7 +77,7 @@ IP Address yang dialokasikan oleh DHCP bisa berubah secara dinamis. Agar
 tidak berubah, reservasi IP Address harus diatur secara manual di
 pengaturan router via web.
 
-*** Setting Wifi
+** Setting Wifi
 
 Wifi di Raspberrypi dapat diatur walaupun tidak melalui keyboard dan
 monitor secara langsung. Langkah-langkahnya terdapat di website
@@ -107,7 +105,7 @@ Linux root file system sehingga wifi bisa dijalankan. Kode negara
 berdasarkan ISO 3166-1 bisa ditemukan di
 [[https://en.wikipedia.org/wiki/ISO_3166-1][wikipedia ISO 3166-1]]
 
-*** Ganti Password
+** Ganti Password
 
 Secara default, username dan passwordnya adalah:
 
@@ -116,7 +114,7 @@ Secara default, username dan passwordnya adalah:
 
 Password tersebut bisa diganti dengan /command/: =passwd=
 
-*** Ganti Hostname
+** Ganti Hostname
 
 Default hostname-nya adalah =pi@raspberrypi=. Hostname tersebut bisa
 diganti dengan cara:
@@ -134,7 +132,7 @@ berhubungan dengan software. Cara editnya adalah:
 Carilah line yang diawali dengan =127.0.0.1=. Kemudian gantilah
 hostname-nya.
 
-*** Resize SD Card
+** Resize SD Card
 
 Setelah sebuah SD card telah di-flash, maka akan terbuatlah 2 partisi
 yaitu boot dan roots. Secara default, besar partisi tersebut telah
@@ -148,11 +146,11 @@ terlebih dahulu. Barulah setelah itu dimasukkan kembali ke Raspberry Pi.
 
 - [[https://elinux.org/RPi_Resize_Flash_Partitions][Resize SD Card]]
 
-*** Cloning SD Card
+** Cloning SD Card
 
 Cloning SD Card bisa dilakukan menggunakan =Win32 Disk Imager=.
 
-*** Remote Desktop
+** Remote Desktop
     
 - Install VNC Server
 
@@ -171,7 +169,7 @@ Download software dari website [[https://www.realvnc.com/en/connect/download/vie
 Buka aplikasinya kemudian ketikkan ipaddress pada kolom yang tersedia di
 software tersebut.
 
-*** Secure Copy (SCP)
+** Secure Copy (SCP)
 
 Kopi data antar 2 komputer bisa menggunakan =secure copy= (SCP).
 Tutorialnya ada di website Raspberrypi bagian
@@ -204,7 +202,7 @@ Jika /complete path/ tidak diberikan, maka file akan tersimpan di:
 
 :    /home/user/
 
-*** Resolusi Monitor
+** Resolusi Monitor
 
 Untuk ukuran monitor Philips pilih resolusi 1680x1050 60 Hz (16:10).
 
@@ -214,7 +212,7 @@ Caranya adalah ketik sudo raspi-config di terminal kemudian
 - navigasi ke A5 Resolution
 - pilih DMT Mode 58 1680x1050 60 Hz (16:10)
 
-*** Setting Static IP Address
+** Setting Static IP Address
 
 Buka file berikut:
 
@@ -309,7 +307,7 @@ via Wifi: ssh [[mailto:pi@192.168.2.X][pi@192.168.2.X]]
 - [[http://www.knight-of-pi.org/de/paralleler-ethernet-und-wifi-zugriff-fuer-den-raspberry-pi-3/][parallel LAN and Wifi]]
 - [[https://raspberrypi.stackexchange.com/questions/8851/setting-up-wifi-and-ethernet][setting LAN and Wifi]]
 
-*** Mounting USB Drive
+** Mounting USB Drive
 
 *Kumpulkan Informasi Disk*
 
@@ -350,21 +348,21 @@ Jika format storage-nya adalah ntfs, maka install:
 
 - [[https://raspberrytips.com/mount-usb-drive-raspberry-pi/][Mount a usb drive]]
 
-*** CHMOD: File Permission
+** CHMOD: File Permission
 
 - [[https://www.howtogeek.com/437958/how-to-use-the-chmod-command-on-linux/][howtogeek.com: chmod on linux]]
 
-** Softwares
+* Softwares
 
 - Vim
 - Git
 
-** Web Server (Apache2)
+* Web Server (Apache2)
 
 Berikut ini adalah tutorial untuk serve HTML files melalui HTTP
 menggunakan Apache2.
 
-*** Install Apache2
+** Install Apache2
 
 Tutorialnya berikut ini didapat dari website Raspberrypi bagian
 [[https://www.raspberrypi.org/documentation/remote-access/web-server/apache.md][remote-access/web-server/apache]].
@@ -385,7 +383,7 @@ Setelah instalasi, maka akan dibuatkan folder dengan path berikut:
 
 :    var/www/html
 
-*** Test Web Server
+** Test Web Server
 
 Secara default, di folder =var/www/html= terdapat sebuah file
 =index.html=. File tersebut bisa digunakan untuk test apakah web server
@@ -394,12 +392,12 @@ berhasil diinstall.
 Untuk mengetesnya, bukalah =http://IP-Address=, contohnya
 =http://192.168.1.10=.
 
-*** Serve Static Web
+** Serve Static Web
 
 Simpanlah file html anda di folder =var/www/html=. Bukalah alamat web
 tersebut di browser.
 
-*** Ganti Document Root
+** Ganti Document Root
 
 Ini bertujuan agar data yang disimpan di usb drive dapat disajikan
 melalui web server.
@@ -476,7 +474,7 @@ perlu diedit adalah:
 
 Tutorialnya ada di website [[https://www.digitalocean.com/community/tutorials/how-to-move-an-apache-web-root-to-a-new-location-on-ubuntu-16-04][digitalocean-change-web-root]].
 
-*** Multiple Web
+** Multiple Web
 
 Berikut ini tutorial untuk menjalankan dua buah website secara lokal.
 Struktur folder html yang saya gunakan adalah:
@@ -585,7 +583,7 @@ berikut:
 - [[https://www.digitalocean.com/community/tutorials/how-to-set-up-apache-virtual-hosts-on-ubuntu-18-04][digitalocean-setup-virtual-hosts]].
 - [[https://pimylifeup.com/raspberry-pi-apache/][pimylifeup-setup-apache-web-server]]
 
-** Web Server (Nginx - Docker)
+* Web Server (Nginx - Docker)
 
 Berikut ini adalah cara menjalankan Nginx menggunakan docker.
 
@@ -633,7 +631,7 @@ Kemudian jalankan:
     $ docker-compose up -d
 #+END_EXAMPLE
 
-** File Sharing (Samba)
+* File Sharing (Samba)
 
 Samba memungkinkan pertukaran data antara linux dengan windows melalui
 network dalam bentuk =shared folder=. Berikut ini adalah cara-cara untuk
@@ -681,7 +679,7 @@ tambahkan /script/ berikut pada bagian akhir file =smb.conf=:
 
 - [[https://pimylifeup.com/raspberry-pi-samba/][How to setup a raspberry pi samba server]]
 
-** Wireless Printer
+* Wireless Printer
 
 Berikut ini adalah langkah-langkah untuk menjadikan usb printer menjadi
 wireless printer. Konsep dasarnya adalah dengan cara menghubungkan usb
@@ -703,7 +701,26 @@ network.
 
 - [[https://www.howtogeek.com/169679/how-to-add-a-printer-to-your-raspberry-pi-or-other-linux-computer/][Add a printer to a raspberry]]
 
-** DNS Server
+* Scanner
+
+- Install Sane
+
+: sudo apt install sane
+
+- Detect scanner
+
+: sudo sane-find-scanner -q
+
+- Scan command
+
+: scanimage > pimylifeup.jpg --format jpeg --resolution=300 -p
+
+- Referensi
+
+[[https://pimylifeup.com/raspberry-pi-scanner-server/#testingscannerwithsane][Setting
+up a raspberry pi scanner server using SANE]]
+
+* DNS Server
    
 DNS adalah singkatan dari /Domain Name System/. DNS berguna untuk
 menterjemahkan nama domain ke /IP addresses/. Dalam sebuah jaringan,
@@ -784,7 +801,7 @@ pada kasus ini).
 - [[https://pimylifeup.com/raspberry-pi-dns-server/][pimylifeup:
   raspberry pi a DNS server]]
 
-** Local Hostname
+* Local Hostname
 
 - Buka file
 
@@ -794,7 +811,7 @@ pada kasus ini).
 
 :    192.168.1.17    contoh.ysi
 
-** VPN
+* VPN
 
 VPN berguna agar home networking bisa diakses dari luar jaringan.
 
@@ -848,7 +865,7 @@ VPN berguna agar home networking bisa diakses dari luar jaringan.
 - [[https://www.youtube.com/watch?v=zsN47t2r_WU][Youtube: Install
   PiVPN]]
 
-** Boot dari USB
+* Boot dari USB
 
 - Jalankan Rpi dengan sd card
 - Update dan upgrade 
@@ -859,7 +876,7 @@ VPN berguna agar home networking bisa diakses dari luar jaringan.
     reboot
 - Clone sd card ke usb storage (flashdrive/ssd)
 
-** List USB
+* List USB
 
 Untuk menampilkan daftar usb devices yang terkoneksi ke Rpi.
 
